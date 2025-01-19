@@ -1,0 +1,31 @@
+//
+//  OrderCellView.swift
+//  HelloCoffee
+//
+//  Created by Akram Ul Hasan on 12/1/25.
+//
+
+import SwiftUI
+
+struct OrderCellView: View {
+    
+    let order : Order
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(order.name)
+                    .accessibilityIdentifier("orderNameText")
+                    .bold()
+                
+                Text("\(order.CoffeeName) (\(order.size.rawValue)")
+                    .accessibilityIdentifier("coffeeNameAndSizeText")
+                    .opacity(0.5)
+            }
+            Spacer()
+            Text(order.count as NSNumber, formatter: NumberFormatter.currency)
+                .accessibilityIdentifier("coffeePriceText")
+        }
+    }
+}
+

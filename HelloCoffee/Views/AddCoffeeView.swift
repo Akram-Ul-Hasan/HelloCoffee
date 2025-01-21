@@ -62,7 +62,7 @@ struct AddCoffeeView: View {
         
         NavigationStack {
             Form {
-                TextField("N ame", text: $name)
+                TextField("Name", text: $name)
                     .accessibilityIdentifier("name")
                 Text(errors.name)
                     .visible(!errors.name.isEmpty)

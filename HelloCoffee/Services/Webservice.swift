@@ -51,8 +51,6 @@ class Webservice {
         
         guard let httpResponce = responce as? HTTPURLResponse,
                 httpResponce.statusCode == 200 else {
-            let httpresponce = responce as? HTTPURLResponse
-            print(httpresponce?.statusCode ?? "no status code")
             throw NetworkError.badRequest
         }
         
@@ -60,5 +58,26 @@ class Webservice {
             throw NetworkError.decodingError
         }
         return newOrder
+    }
+    
+    func deleteOrder(orderId: Int) async throws -> Order {
+        guard let url = URL(string: Endpoints.deleteOrder(orderId).path, relativeTo: baseURL) else {
+            throw NetworkError.badURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        let (data, responce) = try await URLSession.shared.data(for: request)
+        guard let httpResponce = responce as? HTTPURLResponse,
+              httpResponce.statusCode == 200 else {
+            throw NetworkError.badRequest
+        }
+        
+        guard let deletedOrder = try? JSONDecoder().decode(Order.self, from: data) else {
+            throw NetworkError.decodingError
+        }
+        
+        return deletedOrder
     }
 }

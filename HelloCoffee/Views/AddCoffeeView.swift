@@ -30,7 +30,7 @@ struct AddCoffeeView: View {
             try await model.placeOrder(order)
             dismiss()
         } catch {
-            print("error")
+            print(error)
         }
     }
     

@@ -36,4 +36,29 @@ class Webservice {
         }
         return orders
     }
+    
+    func placeOrder(order: Order) async throws -> Order {
+        guard let url = URL(string: Endpoints.placeOrder.path, relativeTo: baseURL) else {
+            throw NetworkError.badURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(order)
+        
+        let (data, responce) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponce = responce as? HTTPURLResponse,
+                httpResponce.statusCode == 200 else {
+            let httpresponce = responce as? HTTPURLResponse
+            print(httpresponce?.statusCode ?? "no status code")
+            throw NetworkError.badRequest
+        }
+        
+        guard let newOrder = try? JSONDecoder().decode(Order.self, from: data) else {
+            throw NetworkError.decodingError
+        }
+        return newOrder
+    }
 }

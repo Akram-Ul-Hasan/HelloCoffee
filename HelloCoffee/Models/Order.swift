@@ -13,11 +13,9 @@ enum CoffeeSize : String, Codable, CaseIterable {
 }
 
 struct Order : Codable, Identifiable, Hashable {
-    
     var id : Int?
     var name : String
-    var CoffeeName : String
-    var count : Int
+    var coffeeName : String
+    var total : Double
     var size : CoffeeSize
-    
 }

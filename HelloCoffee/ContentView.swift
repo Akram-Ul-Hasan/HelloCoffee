@@ -11,26 +11,43 @@ struct ContentView: View {
     
     @EnvironmentObject private var model: CoffeeModel
     
+    @State private var isPresented: Bool = false
+    
     private func getOrders() async {
         do {
             try await model.getOrders()
         } catch {
-            print(error)
+            print("fail to get order")
         }
     }
     
     var body: some View {
-        VStack {
-            if model.orders.isEmpty {
-                Text("No orders available!").accessibilityIdentifier("noOrdersText")
-            } else {
-                List(model.orders) { order in
-                    OrderCellView(order: order)
+        
+        NavigationStack {
+            VStack {
+                if model.orders.isEmpty {
+                    Text("No orders available!").accessibilityIdentifier("noOrdersText")
+                } else {
+                    List(model.orders) { order in
+                        OrderCellView(order: order)
+                    }
                 }
             }
-        }
-        .task {
-            await getOrders()
+            .task {
+                print("getOrders")
+                await getOrders()
+            }
+            .sheet(isPresented: $isPresented, content: {
+                AddCoffeeView()
+            })
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Add New Order") {
+                        isPresented = true
+                    }
+                    .accessibilityIdentifier("addNewOrderButton")
+                }
+            }
         }
     }
 }
